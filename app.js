@@ -1,9 +1,18 @@
 require("dotenv").config();
+const { createCommentInIssue } = require("./services/githubApi");
+
 const express = require("express");
 const { createEventAdapter } = require("@slack/events-api");
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 3000;
 const app = express();
+
+// github stuff
+const owner = process.env.GITHUB_OWNER_DEFAULT;
+const repo = process.env.GITHUB_REPO_DEFAULT;
+createCommentInIssue(owner, repo, 7, "**New Comment From Slack**");
+
+//**** slack stuff
 
 // Setup slack event listener
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET);
@@ -23,7 +32,7 @@ let userCache = new Map();
 
 const returnMessage = async (conversationId) => {
   const result = await web.chat.postMessage({
-    text: "I am alive@!!",
+    text: "Your thread has been saved to Github ticket #xxxxxxx",
     channel: conversationId,
   });
   console.log(

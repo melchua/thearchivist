@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@octokit/rest": "^17.9.2",
     "@slack/events-api": "^2.3.2",
     "@slack/web-api": "^5.8.1",
     "dotenv": "^8.2.0"

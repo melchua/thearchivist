@@ -91,8 +91,8 @@ const getParent = async (channelId, threadTs) => {
 const parseCommands = (commandText) => {
   // 1. parse issue id
   const issueIdRegex = /#([0-9])+/;
-  const ownerNameRegex = /o:[A-Za-z0-9]\w+/;
-  const repoNameRegex = /r:([A-z])\w+/;
+  const ownerNameRegex = /o:[\w'-]+/;
+  const repoNameRegex = /r:([\w'-])+/;
 
   const issueId =
     commandText.match(issueIdRegex) &&

@@ -5,12 +5,16 @@ const octokit = new Octokit({
 });
 
 const createCommentInIssue = async (owner, repo, issue_number, body) => {
-  await octokit.issues.createComment({
-    owner,
-    repo,
-    issue_number,
-    body,
-  });
+  try {
+    await octokit.issues.createComment({
+      owner,
+      repo,
+      issue_number,
+      body,
+    });
+  } catch (e) {
+    console.log("error: ", e);
+  }
 };
 
 module.exports = { createCommentInIssue: createCommentInIssue };

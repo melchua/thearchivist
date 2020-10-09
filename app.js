@@ -30,18 +30,24 @@ slackEvents.on("app_mention", async (event) => {
     `Received a message event: user ${event.user} in channel ${event.channel} in message number ${event.ts} says ${event.text}`
   );
 
-  parseCommands(event.text);
+  const commandReceived = parseCommands(event.text);
+  console.log("receive: ", commandReceived);
 
+  // @CorgiBot #123 o:[owner] r:[repo]
   try {
     const parentThread = await getParent(channelId, event.ts);
     console.log("parent", parentThread);
     if (parentThread) {
       const replies = await getReplies(channelId, parentThread);
-      // console.log("Replies: ", replies);
       const bodyString = formatThreadToString(replies);
       const commentBody = await replaceUsernames(bodyString);
-      createCommentInIssue(owner, repo, 7, commentBody);
-      returnMessage(channelId, "Success");
+      createCommentInIssue(
+        commandReceived.ownerName || owner,
+        commandReceived.repoName || repo,
+        commandReceived.issueId,
+        commentBody
+      );
+      // returnMessage(channelId, "Success");
     } else {
       returnMessage(
         channelId,

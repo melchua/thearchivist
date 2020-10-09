@@ -14,7 +14,7 @@ const getUserName = async (userId) => {
   }
   const user = await web.users.profile.get({ token: token, user: userId });
   const userName = await user.profile.real_name;
-  // now add to cache
+
   userCache.set(userId, userName);
   return userName;
 };
@@ -88,22 +88,23 @@ const getParent = async (channelId, threadTs) => {
   }
 };
 
-// When the bot is mentioned:
-// 1. Check if commands are correct
-//    a. if correct, then continue
-//    b. else bot returns error
-// 2. Parse the message text to get:
-//    a. The command (add)
-//    b. Github ticket id
-//    ie. "add to #17200"
-// 3. Submit to github
-
 const parseCommands = (commandText) => {
-  // 1. parse github id
-  const githubIdRegex = /#([0-9])\w+/;
-  const githubId =
-    commandText.match(githubIdRegex) && commandText.match(githubIdRegex)[0];
-  console.log("found: ", githubId);
+  // 1. parse issue id
+  const issueIdRegex = /#([0-9])+/;
+  const ownerNameRegex = /o:[A-Za-z0-9]\w+/;
+  const repoNameRegex = /r:([A-z])\w+/;
+
+  const issueId =
+    commandText.match(issueIdRegex) &&
+    commandText.match(issueIdRegex)[0].substring(1);
+  const ownerName =
+    commandText.match(ownerNameRegex) &&
+    commandText.match(ownerNameRegex)[0].substring(2);
+  const repoName =
+    commandText.match(repoNameRegex) &&
+    commandText.match(repoNameRegex)[0].substring(2);
+
+  return { issueId: issueId, ownerName: ownerName, repoName: repoName };
 };
 
 module.exports = {

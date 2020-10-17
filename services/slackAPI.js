@@ -91,8 +91,9 @@ const getParent = async (channelId, threadTs) => {
 const parseCommands = (commandText) => {
   // 1. parse issue id
   const issueIdRegex = /#([0-9])+/;
-  const ownerNameRegex = /o:[\w'-]+/;
+  const ownerNameRegex = /o:([\w'-])+/;
   const repoNameRegex = /r:([\w'-])+/;
+  const lastMessagesCountRegex = /last:([0-9])+/;
 
   const issueId =
     commandText.match(issueIdRegex) &&
@@ -103,8 +104,13 @@ const parseCommands = (commandText) => {
   const repoName =
     commandText.match(repoNameRegex) &&
     commandText.match(repoNameRegex)[0].substring(2);
+  const lastNumberOfMessages = 
+    commandText.match(lastMessagesCountRegex) &&
+    commandText.match(lastMessagesCountRegex)[0].substring(5);
+  
+  console.log("last number", lastNumberOfMessages);
 
-  return { issueId: issueId, ownerName: ownerName, repoName: repoName };
+  return { issueId: issueId, ownerName: ownerName, repoName: repoName, lastNumberOfMessages: lastNumberOfMessages};
 };
 
 module.exports = {

@@ -33,12 +33,22 @@ slackEvents.on("app_mention", async (event) => {
   const commandReceived = parseCommands(event.text);
   console.log("receive: ", commandReceived);
 
-  // @CorgiBot #123 o:[owner] r:[repo]
+  // @CorgiBot #123 o:[owner] r:[repo] last:[number of messages back]
   try {
     const parentThread = await getParent(channelId, event.ts);
     console.log("parent", parentThread);
     if (parentThread) {
-      const replies = await getReplies(channelId, parentThread);
+      let replies = await getReplies(channelId, parentThread);
+      console.log("replies", replies);
+      // filter replies - remove last reply as it is the corgi command
+      replies = replies.slice(0,replies.length - 1);
+      console.log("replies-strip end", replies);
+      // filter replies - last x # of replies depending on request
+      if (commandReceived.lastNumberOfMessages) {
+        replies = replies.slice(replies.length - commandReceived.lastNumberOfMessages, replies.length);
+      }
+      console.log("replies after remove", replies);
+
       const bodyString = formatThreadToString(replies);
       const commentBody = await replaceUsernames(bodyString);
       createCommentInIssue(
